@@ -18,8 +18,8 @@ pipeline {
         
         stage('Docker Login') {
             steps {
-                // 使用 env. 显式引用
-                sh "echo ${env.HARBOR_LOGIN_PSW} | docker login ${env.HARBOR_URL} -u ${env.HARBOR_LOGIN_USR} --password-stdin"
+                // 使用单引号避免 Shell 解析密码中的特殊字符
+                sh 'echo "${HARBOR_LOGIN_PSW}" | docker login "${HARBOR_URL}" -u "${HARBOR_LOGIN_USR}" --password-stdin'
             }
         }
         
