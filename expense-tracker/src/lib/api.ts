@@ -51,8 +51,8 @@ class ApiClient {
     try {
       let response = await fetch(url, { ...init, headers });
 
-      // 如果 403 Forbidden，可能是 Access Token 过期
-      if (response.status === 403 && this.refreshToken) {
+      // 如果 401 Unauthorized，可能是 Access Token 过期
+      if (response.status === 401 && this.refreshToken) {
         // 尝试刷新 Token
         const refreshRes = await fetch(`${API_URL}/auth/refresh-token`, {
           method: 'POST',
@@ -77,7 +77,9 @@ class ApiClient {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Network response was not ok');
+        const errorMessage = errorData.detail || errorData.error || 'Network response was not ok';
+        console.error('Backend Error Detail:', errorData);
+        throw new Error(errorMessage);
       }
 
       return response.json();

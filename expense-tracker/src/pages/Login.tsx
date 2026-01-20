@@ -20,13 +20,12 @@ export default function LoginPage({ onLoginSuccess }: LoginProps) {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.type === 'email' ? 'email' : 'password']: e.target.value });
-    // 注意：上面的写法有点取巧，为了处理多个输入框建议显式 id
-    // 这里简单处理：
-    if (e.target.placeholder === '昵称') setFormData(prev => ({...prev, nickname: e.target.value}));
-    if (e.target.type === 'email') setFormData(prev => ({...prev, email: e.target.value}));
-    if (e.target.placeholder === '密码') setFormData(prev => ({...prev, password: e.target.value}));
-    if (e.target.placeholder === '确认密码') setFormData(prev => ({...prev, confirmPassword: e.target.value}));
+    const { placeholder, value, type } = e.target;
+    
+    if (placeholder === '昵称') setFormData(prev => ({...prev, nickname: value}));
+    else if (type === 'email') setFormData(prev => ({...prev, email: value}));
+    else if (placeholder === '密码') setFormData(prev => ({...prev, password: value}));
+    else if (placeholder === '确认密码') setFormData(prev => ({...prev, confirmPassword: value}));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
