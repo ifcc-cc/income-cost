@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // 请在此处修改为您的 Harbor 实际信息
-        HARBOR_URL = "harbor.yourdomain.com"
+        HARBOR_URL = "192.168.0.218"
         HARBOR_PROJECT = "expense-tracker"
         // 需在 Jenkins 凭据管理中创建 ID 为 'harbor-creds' 的凭据
         HARBOR_CREDS = credentials('harbor-creds')
