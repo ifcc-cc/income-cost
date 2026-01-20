@@ -2,7 +2,8 @@ interface FetchOptions extends RequestInit {
   params?: Record<string, string>;
 }
 
-const API_URL = 'http://localhost:3000';
+// 判定环境：如果是开发服务器端口则连本地后端，否则使用相对路径（走 Nginx 代理）
+const API_URL = window.location.port === '5173' ? 'http://localhost:3000' : '';
 
 class ApiClient {
   private accessToken: string | null = null;
