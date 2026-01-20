@@ -43,8 +43,8 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                // 将 docker-compose 替换为 docker compose (Docker V2 语法)
-                sh "docker compose up -d --build"
+                // 使用 docker-compose
+                sh "docker-compose up -d --build"
             }
         }
     }
