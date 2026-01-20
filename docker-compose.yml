@@ -16,7 +16,7 @@ services:
     build: ./expense-tracker
     container_name: expense-frontend
     ports:
-      - "80:80"
+      - "8090:8090"
     depends_on:
       - backend
     restart: always

@@ -43,11 +43,8 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                // 将 IMAGE_VERSION 传递给 docker-compose
-                sh """
-                    export IMAGE_TAG=${env.IMAGE_VERSION}
-                    docker-compose up -d --build
-                """
+                // 将 docker-compose 替换为 docker compose (Docker V2 语法)
+                sh "docker compose up -d --build"
             }
         }
     }
