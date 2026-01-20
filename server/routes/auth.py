@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
-from ..database import get_session, redis
-from ..models import User
-from ..schemas import UserCreate, UserLogin, Token, TokenRefresh
-from ..auth import get_password_hash, verify_password, create_tokens, create_token, get_current_user_id
-from ..config import CONFIG
+from database import get_session, redis
+from models import User
+from schemas import UserCreate, UserLogin, Token, TokenRefresh
+from auth import get_password_hash, verify_password, create_tokens, create_token, get_current_user_id
+from config import CONFIG
 from jose import jwt, JWTError
 
 router = APIRouter(prefix="/auth", tags=["auth"])

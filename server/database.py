@@ -1,5 +1,5 @@
 from sqlmodel import create_engine, Session, SQLModel
-from .config import CONFIG
+from config import CONFIG
 
 engine = create_engine(CONFIG.DATABASE_URL, connect_args={"check_same_thread": False})
 

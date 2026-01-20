@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import traceback
-from .database import init_db
-from .routes import auth, users, transactions
+from database import init_db
+from routes import auth, users, transactions
 
 app = FastAPI(title="Expense Tracker API")
 

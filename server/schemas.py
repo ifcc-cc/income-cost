@@ -1,6 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel
-from .models import UserBase, TransactionBase
+from models import UserBase, TransactionBase
 
 class UserCreate(UserBase):
     password: str
