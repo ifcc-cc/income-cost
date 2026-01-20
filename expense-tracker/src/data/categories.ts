@@ -1,4 +1,4 @@
-import { Category } from "./types";
+import { Category } from "../types";
 
 // 支出分类
 export const EXPENSE_CATEGORIES: Category[] = [

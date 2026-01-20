@@ -1,4 +1,4 @@
-import { Transaction, UserState } from "./types";
+import { Transaction, UserState } from "../types";
 
 export const MOCK_USER: UserState = {
   balance: 12580.00,

@@ -39,13 +39,11 @@ class ApiClient {
     }
 
     // 默认 Headers
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...init.headers,
-    };
+    const headers = new Headers(init.headers);
+    headers.set('Content-Type', 'application/json');
 
     if (this.accessToken) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`;
+      headers.set('Authorization', `Bearer ${this.accessToken}`);
     }
 
     try {
@@ -65,7 +63,7 @@ class ApiClient {
           this.setTokens(accessToken, this.refreshToken); // 更新 Access Token
           
           // 重试原请求
-          headers['Authorization'] = `Bearer ${accessToken}`;
+          headers.set('Authorization', `Bearer ${accessToken}`);
           response = await fetch(url, { ...init, headers });
         } else {
           // 刷新失败，强制登出
