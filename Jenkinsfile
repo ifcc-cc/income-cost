@@ -2,11 +2,10 @@ pipeline {
     agent any
     
     environment {
-        // 请在此处修改为您的 Harbor 实际信息
         HARBOR_URL = "192.168.0.218"
         HARBOR_PROJECT = "expense-tracker"
-        // 需在 Jenkins 凭据管理中创建 ID 为 'harbor-creds' 的凭据
-        HARBOR_CREDS = credentials('harbor-creds')
+        // 确保 Jenkins 中存在 ID 为 'harbor-creds' 的凭据
+        HARBOR_LOGIN = credentials('harbor-creds')
         IMAGE_VERSION = "build-${env.BUILD_NUMBER}"
     }
     
@@ -19,15 +18,16 @@ pipeline {
         
         stage('Docker Login') {
             steps {
-                sh "echo ${HARBOR_CREDS_PSW} | docker login ${HARBOR_URL} -u ${HARBOR_CREDS_USR} --password-stdin"
+                // 使用 env. 显式引用
+                sh "echo ${env.HARBOR_LOGIN_PSW} | docker login ${env.HARBOR_URL} -u ${env.HARBOR_LOGIN_USR} --password-stdin"
             }
         }
         
         stage('Build & Push Backend') {
             steps {
                 dir('server') {
-                    sh "docker build -t ${HARBOR_URL}/${HARBOR_PROJECT}/backend:${IMAGE_VERSION} ."
-                    sh "docker push ${HARBOR_URL}/${HARBOR_PROJECT}/backend:${IMAGE_VERSION}"
+                    sh "docker build -t ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/backend:${env.IMAGE_VERSION} ."
+                    sh "docker push ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/backend:${env.IMAGE_VERSION}"
                 }
             }
         }
@@ -35,18 +35,18 @@ pipeline {
         stage('Build & Push Frontend') {
             steps {
                 dir('expense-tracker') {
-                    sh "docker build -t ${HARBOR_URL}/${HARBOR_PROJECT}/frontend:${IMAGE_VERSION} ."
-                    sh "docker push ${HARBOR_URL}/${HARBOR_PROJECT}/frontend:${IMAGE_VERSION}"
+                    sh "docker build -t ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/frontend:${env.IMAGE_VERSION} ."
+                    sh "docker push ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/frontend:${env.IMAGE_VERSION}"
                 }
             }
         }
         
         stage('Deploy') {
             steps {
-                // 如果在 Jenkins 本机运行，直接使用 docker-compose
-                // 生产环境建议通过 SSH 远程执行
+                // 将 IMAGE_VERSION 传递给 docker-compose
                 sh """
-                    IMAGE_TAG=${IMAGE_VERSION} docker-compose up -d --build
+                    export IMAGE_TAG=${env.IMAGE_VERSION}
+                    docker-compose up -d --build
                 """
             }
         }
@@ -54,13 +54,19 @@ pipeline {
     
     post {
         always {
-            sh "docker logout ${HARBOR_URL}"
+            script {
+                try {
+                    sh "docker logout ${env.HARBOR_URL}"
+                } catch (e) {
+                    echo "Docker logout failed or not logged in."
+                }
+            }
         }
         success {
-            echo "CI/CD 部署成功！"
+            echo "CI/CD 部署成功！版本: ${env.IMAGE_VERSION}"
         }
         failure {
-            echo "CI/CD 部署失败，请检查日志。"
+            echo "CI/CD 部署失败，请检查 Jenkins 凭据和 Harbor 状态。"
         }
     }
 }
