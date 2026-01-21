@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import { ChevronLeft, ChevronRight, Calendar, Search } from 'lucide-react';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
 import { Edit3, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';

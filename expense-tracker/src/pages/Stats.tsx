@@ -26,7 +26,7 @@ export default function StatsPage({ refreshKey }: { refreshKey?: number }) {
 
   useEffect(() => {
     fetchStats();
-  }, [date, viewType]);
+  }, [date, viewType, refreshKey]);
 
   const changeDate = (offset: number) => {
     const newDate = new Date(date);
@@ -52,7 +52,7 @@ export default function StatsPage({ refreshKey }: { refreshKey?: number }) {
           >月</button>
           <button 
             onClick={() => setViewType('year')}
-            className={cn("px-4 py-1.5 rounded-lg text-sm font-bold transition-all", viewType === 'year' ? "bg-white shadow-sm text-slate-900" : "text-400")}
+            className={cn("px-4 py-1.5 rounded-lg text-sm font-bold transition-all", viewType === 'year' ? "bg-white shadow-sm text-slate-900" : "text-slate-400")}
           >年</button>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function StatsPage({ refreshKey }: { refreshKey?: number }) {
               <YAxis hide />
               <Tooltip cursor={{fill: 'transparent'}} />
               <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={60}>
-                { [0, 1].map((entry, index) => (
+                { [0, 1].map((_, index) => (
                   <Cell key={`cell-${index}`} fill={index === 0 ? '#10b981' : '#f43f5e'} />
                 ))}
               </Bar>

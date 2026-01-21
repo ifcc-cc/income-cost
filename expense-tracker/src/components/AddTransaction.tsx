@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Delete, Check, Edit3, Wallet, Trash2, Calendar } from 'lucide-react';
+import { X, Delete, Check, Edit3, Wallet, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/data/categories';
 import { TransactionType, Asset, Transaction } from '@/types';
