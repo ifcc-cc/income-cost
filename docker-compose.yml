@@ -9,7 +9,7 @@ services:
     volumes:
       - ./data:/app/data
     environment:
-      - DATABASE_URL=sqlite:///./data/dev.db
+      - DATABASE_URL=sqlite:////app/data/prod.db
     restart: always
 
   frontend:
