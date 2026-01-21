@@ -18,16 +18,22 @@ pipeline {
         
         stage('Docker Login') {
             steps {
-                // 使用单引号避免 Shell 解析密码中的特殊字符
-                sh 'echo "${HARBOR_LOGIN_PSW}" | docker login "${HARBOR_URL}" -u "${HARBOR_LOGIN_USR}" --password-stdin'
+                script {
+                    // 强制清理旧的登录信息并重新登录
+                    sh 'docker logout ${HARBOR_URL} || true'
+                    sh 'echo "${HARBOR_LOGIN_PSW}" | docker login "${HARBOR_URL}" -u "${HARBOR_LOGIN_USR}" --password-stdin'
+                }
             }
         }
         
         stage('Build & Push Backend') {
             steps {
                 dir('server') {
-                    sh "docker build -t ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/backend:${env.IMAGE_VERSION} ."
-                    sh "docker push ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/backend:${env.IMAGE_VERSION}"
+                    script {
+                        def imageTag = "${env.HARBOR_URL}/${env.HARBOR_PROJECT}/backend:${env.IMAGE_VERSION}"
+                        sh "docker build -t ${imageTag} ."
+                        sh "docker push ${imageTag}"
+                    }
                 }
             }
         }
@@ -35,8 +41,11 @@ pipeline {
         stage('Build & Push Frontend') {
             steps {
                 dir('expense-tracker') {
-                    sh "docker build -t ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/frontend:${env.IMAGE_VERSION} ."
-                    sh "docker push ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/frontend:${env.IMAGE_VERSION}"
+                    script {
+                        def imageTag = "${env.HARBOR_URL}/${env.HARBOR_PROJECT}/frontend:${env.IMAGE_VERSION}"
+                        sh "docker build -t ${imageTag} ."
+                        sh "docker push ${imageTag}"
+                    }
                 }
             }
         }
