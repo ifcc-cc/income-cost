@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
-import { Edit3, Trash2 } from 'lucide-react';
+import { Edit3, Trash2, Search, Wallet, CreditCard, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DatePicker } from '../components/ui/DatePicker';
 
@@ -27,7 +27,12 @@ const TransactionItem = ({ t, onEdit, onDelete }: { t: any, onEdit: () => void, 
         className="relative z-10 flex items-center justify-between p-4 bg-white border border-slate-100 rounded-[1.5rem] shadow-sm touch-pan-y"
       >
          <div className="flex items-center gap-4">
-           <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-2xl">💰</div>
+           <div className={cn(
+             "w-12 h-12 rounded-2xl flex items-center justify-center text-xl",
+             t.type === 'income' ? "bg-emerald-50 text-emerald-500" : "bg-blue-50 text-blue-500"
+           )}>
+             {t.type === 'income' ? <Wallet className="w-6 h-6" /> : <CreditCard className="w-6 h-6" />}
+           </div>
            <div>
              <div className="font-bold text-slate-900">{t.categoryName}</div>
              <div className="flex items-center gap-1.5 mt-0.5">
@@ -52,6 +57,7 @@ export default function TransactionsPage({ onEditTransaction, onDeleteTransactio
     new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]
   );
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,13 +67,20 @@ export default function TransactionsPage({ onEditTransaction, onDeleteTransactio
       const list = await api.get<any[]>('/transactions');
       const start = new Date(startDate);
       const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999); // 包含结束当天
+      end.setHours(23, 59, 59, 999);
 
-      const filtered = list.filter(t => {
+      let filtered = list.filter(t => {
         const tDate = new Date(t.date);
         return tDate >= start && tDate <= end;
       });
-      // 按日期倒序，同一天按录入时间倒序排列
+
+      if (searchQuery.trim()) {
+        filtered = filtered.filter(t => 
+          t.note?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          t.categoryName?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
       setTransactions(filtered.sort((a, b) => {
         const dateA = new Date(a.date).getTime();
         const dateB = new Date(b.date).getTime();
@@ -78,33 +91,56 @@ export default function TransactionsPage({ onEditTransaction, onDeleteTransactio
     finally { setIsLoading(false); }
   };
 
-  useEffect(() => { fetchData(); }, [startDate, endDate, refreshKey]);
+  useEffect(() => { fetchData(); }, [startDate, endDate, searchQuery, refreshKey]);
 
   return (
     <div className="pb-24 pt-12 px-6">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">交易流水</h1>
-        <p className="text-xs text-slate-400 font-medium mt-1">按自定义时间段查询收支明细</p>
+        <p className="text-xs text-slate-400 font-medium mt-1">按自定义时间段或备注查询明细</p>
       </div>
 
-      <div className="bg-white p-4 rounded-[2rem] shadow-sm border border-slate-100 mb-8 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">开始日期</label>
-            <DatePicker 
-              value={startDate} 
-              onChange={setStartDate} 
-              className="bg-slate-50 border-none"
-            />
+      <div className="space-y-4 mb-8">
+        {/* 日期筛选 */}
+        <div className="bg-white p-4 rounded-[2rem] shadow-sm border border-slate-100 space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">开始日期</label>
+              <DatePicker 
+                value={startDate} 
+                onChange={setStartDate} 
+                className="bg-slate-50 border-none"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">结束日期</label>
+              <DatePicker 
+                value={endDate} 
+                onChange={setEndDate} 
+                className="bg-slate-50 border-none"
+              />
+            </div>
           </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">结束日期</label>
-            <DatePicker 
-              value={endDate} 
-              onChange={setEndDate} 
-              className="bg-slate-50 border-none"
-            />
-          </div>
+        </div>
+
+        {/* 搜索框 */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input 
+            type="text"
+            placeholder="搜索备注或分类..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-10 py-4 bg-white border border-slate-100 rounded-2xl shadow-sm text-sm font-medium outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full"
+            >
+              <X className="w-3.5 h-3.5 text-slate-400" />
+            </button>
+          )}
         </div>
       </div>
 

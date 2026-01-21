@@ -1,5 +1,5 @@
 import { motion, PanInfo, useAnimation } from 'framer-motion';
-import { Eye, EyeOff, TrendingUp, TrendingDown, ArrowRight, Edit3, Trash2 } from 'lucide-react';
+import { Eye, EyeOff, TrendingUp, TrendingDown, ArrowRight, Edit3, Trash2, Wallet, CreditCard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
@@ -56,8 +56,11 @@ const TransactionItem = ({ t, onEdit, onDelete }: { t: any, onEdit: () => void, 
         style={{ x: 0 }}
       >
          <div className="flex items-center gap-4 pointer-events-none">
-           <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-2xl">
-             💰
+           <div className={cn(
+             "w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-transform",
+             t.type === 'income' ? "bg-emerald-50 text-emerald-500" : "bg-blue-50 text-blue-500"
+           )}>
+             {t.type === 'income' ? <Wallet className="w-6 h-6" /> : <CreditCard className="w-6 h-6" />}
            </div>
            <div>
              <div className="font-bold text-slate-900">{t.categoryName}</div>
@@ -153,14 +156,18 @@ export default function HomePage({ user, refreshKey, onEditTransaction, onDelete
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3 backdrop-blur-sm">
-               <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400"><TrendingDown className="w-4 h-4" /></div>
+               <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                 <Wallet className="w-4 h-4" />
+               </div>
                <div>
                  <div className="text-xs text-slate-400">本月收入</div>
                  <div className="text-sm font-semibold text-emerald-100">{showBalance ? `+${stats.monthlyIncome}` : '****'}</div>
                </div>
             </div>
             <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3 backdrop-blur-sm">
-               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white"><TrendingUp className="w-4 h-4" /></div>
+               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
+                 <CreditCard className="w-4 h-4" />
+               </div>
                <div>
                  <div className="text-xs text-slate-400">本月支出</div>
                  <div className="text-sm font-semibold text-white">{showBalance ? `-${stats.monthlyExpense}` : '****'}</div>

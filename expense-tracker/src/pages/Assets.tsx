@@ -93,7 +93,7 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
         <div className="relative z-10">
           <h1 className="text-blue-100 text-sm font-medium mb-2">总资产</h1>
           <div className="text-4xl font-bold mb-6">
-            ¥ {stats?.balance.toLocaleString('zh-CN', { minimumFractionDigits: 2 })}
+            ¥ {(stats?.balance || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2 })}
           </div>
           
           <div className="grid grid-cols-2 gap-4 bg-white/10 p-4 rounded-xl backdrop-blur-sm">
@@ -103,7 +103,7 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
               </div>
               <div>
                 <div className="text-xs text-blue-100">本月收入</div>
-                <div className="font-semibold">+{stats?.monthlyIncome.toLocaleString()}</div>
+                <div className="font-semibold">+{(stats?.monthlyIncome || 0).toLocaleString()}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -112,7 +112,7 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
               </div>
               <div>
                 <div className="text-xs text-blue-100">本月支出</div>
-                <div className="font-semibold">-{stats?.monthlyExpense.toLocaleString()}</div>
+                <div className="font-semibold">-{(stats?.monthlyExpense || 0).toLocaleString()}</div>
               </div>
             </div>
           </div>

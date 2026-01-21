@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Calendar, ChevronLeft, ChevronRight, TrendingUp, TrendingDown } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Wallet, CreditCard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function StatsPage({ refreshKey }: { refreshKey?: number }) {
@@ -71,14 +71,14 @@ export default function StatsPage({ refreshKey }: { refreshKey?: number }) {
       <div className="grid grid-cols-2 gap-4 mb-8">
         <div className="bg-emerald-50 p-5 rounded-3xl border border-emerald-100">
           <div className="flex items-center gap-2 text-emerald-600 mb-1">
-            <TrendingUp className="w-4 h-4" />
+            <Wallet className="w-4 h-4" />
             <span className="text-xs font-bold">总收入</span>
           </div>
           <div className="text-xl font-black text-emerald-700">¥ {data?.monthlyIncome.toLocaleString()}</div>
         </div>
         <div className="bg-rose-50 p-5 rounded-3xl border border-rose-100">
           <div className="flex items-center gap-2 text-rose-600 mb-1">
-            <TrendingDown className="w-4 h-4" />
+            <CreditCard className="w-4 h-4" />
             <span className="text-xs font-bold">总支出</span>
           </div>
           <div className="text-xl font-black text-rose-700">¥ {data?.monthlyExpense.toLocaleString()}</div>

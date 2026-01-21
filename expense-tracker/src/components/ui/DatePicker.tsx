@@ -39,7 +39,11 @@ export function DatePicker({ value, onChange, label, className }: DatePickerProp
   }, [currentViewDate]);
 
   const handleDateSelect = (date: Date) => {
-    const formatted = date.toISOString().split('T')[0];
+    // 修复时区偏差：手动拼接本地日期字符串
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const formatted = `${y}-${m}-${d}`;
     onChange(formatted);
     setIsOpen(false);
   };
@@ -52,12 +56,18 @@ export function DatePicker({ value, onChange, label, className }: DatePickerProp
 
   const isSelected = (date: Date | null) => {
     if (!date) return false;
-    return date.toISOString().split('T')[0] === value;
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}` === value;
   };
 
   const isToday = (date: Date | null) => {
     if (!date) return false;
-    return date.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
+    const today = new Date();
+    return date.getDate() === today.getDate() && 
+           date.getMonth() === today.getMonth() && 
+           date.getFullYear() === today.getFullYear();
   };
 
   return (
