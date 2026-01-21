@@ -1,5 +1,5 @@
 import { motion, PanInfo, useAnimation } from 'framer-motion';
-import { Eye, EyeOff, TrendingUp, TrendingDown, ArrowRight, Edit3, Trash2, Wallet, CreditCard } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Edit3, Trash2, Wallet, CreditCard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
