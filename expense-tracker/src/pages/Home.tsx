@@ -3,6 +3,7 @@ import { Eye, EyeOff, ArrowRight, Edit3, Trash2, Wallet, CreditCard } from 'luci
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/data/categories';
 
 interface HomePageProps {
   user: any;
@@ -12,9 +13,13 @@ interface HomePageProps {
   onAllRecordsClick?: () => void;
 }
 
+const ALL_CATEGORIES = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
+
 const TransactionItem = ({ t, onEdit, onDelete }: { t: any, onEdit: () => void, onDelete: () => void }) => {
   const controls = useAnimation();
   const [isOpen, setIsOpen] = useState(false);
+  
+  const categoryIcon = ALL_CATEGORIES.find(c => c.id === t.categoryId)?.icon || '💰';
 
   const handleDragEnd = async (_: any, info: PanInfo) => {
     if (info.offset.x < -50) {
@@ -57,10 +62,10 @@ const TransactionItem = ({ t, onEdit, onDelete }: { t: any, onEdit: () => void, 
       >
          <div className="flex items-center gap-4 pointer-events-none">
            <div className={cn(
-             "w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-transform",
-             t.type === 'income' ? "bg-emerald-50 text-emerald-500" : "bg-blue-50 text-blue-500"
+             "w-12 h-12 rounded-2xl flex items-center justify-center text-2xl transition-transform",
+             t.type === 'income' ? "bg-emerald-50" : "bg-blue-50"
            )}>
-             {t.type === 'income' ? <Wallet className="w-6 h-6" /> : <CreditCard className="w-6 h-6" />}
+             {categoryIcon}
            </div>
            <div>
              <div className="font-bold text-slate-900">{t.categoryName}</div>
@@ -129,8 +134,14 @@ export default function HomePage({ user, refreshKey, onEditTransaction, onDelete
             {user?.nickname}
           </h1>
         </div>
-        <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-slate-500 font-bold">
-           {user?.nickname?.[0]}
+        <div className="w-10 h-10 rounded-full bg-blue-100 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-blue-500 font-bold">
+           {user?.avatar ? (
+             <img 
+               src={window.location.port === '5173' ? `http://localhost:3000${user.avatar}` : user.avatar} 
+               alt="avatar" 
+               className="w-full h-full object-cover" 
+             />
+           ) : user?.nickname?.[0]}
         </div>
       </div>
 

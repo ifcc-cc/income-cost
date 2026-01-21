@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import { Wallet, TrendingUp, TrendingDown, PlusCircle, Trash2, X } from 'lucide-react';
+import { Wallet, CreditCard, PlusCircle, Trash2, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Picker } from '../components/ui/Picker';
 import { Asset } from '../types';
@@ -99,7 +99,7 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
           <div className="grid grid-cols-2 gap-4 bg-white/10 p-4 rounded-xl backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-400/20 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-green-300" />
+                <Wallet className="w-5 h-5 text-green-300" />
               </div>
               <div>
                 <div className="text-xs text-blue-100">本月收入</div>
@@ -108,7 +108,7 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
             </div>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-red-400/20 rounded-lg">
-                <TrendingDown className="w-5 h-5 text-red-300" />
+                <CreditCard className="w-5 h-5 text-red-300" />
               </div>
               <div>
                 <div className="text-xs text-blue-100">本月支出</div>

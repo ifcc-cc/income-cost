@@ -1,14 +1,46 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlmodel import Session, select, func
 from database import get_session
 from models import User, Transaction, Asset
 from auth import get_current_user_id, get_password_hash, verify_password
-from schemas import UserMeResponse
+from schemas import UserMeResponse, TransactionRead
 from datetime import datetime
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+from sqlalchemy.orm import joinedload
+import os
+import uuid
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+@router.post("/upload-avatar")
+async def upload_avatar(
+    file: UploadFile = File(...),
+    user_id: str = Depends(get_current_user_id),
+    session: Session = Depends(get_session)
+):
+    # 验证文件类型
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Only images are allowed")
+    
+    # 生成唯一文件名
+    ext = os.path.splitext(file.filename)[1]
+    filename = f"{uuid.uuid4()}{ext}"
+    file_path = os.path.join("data/uploads", filename)
+    
+    # 保存文件
+    with open(file_path, "wb") as f:
+        f.write(await file.read())
+    
+    # 更新用户头像路径
+    user = session.get(User, user_id)
+    if user:
+        user.avatar = f"/uploads/{filename}"
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+    
+    return {"avatarUrl": user.avatar}
 
 class ChangePasswordRequest(BaseModel):
     oldPassword: str
@@ -138,32 +170,67 @@ async def get_complex_stats(
     total_income = session.exec(income_stmt).first() or 0.0
     total_expense = session.exec(expense_stmt).first() or 0.0
 
-    # 2. 按分类统计支出排行
-    cat_stmt = select(
-        Transaction.categoryId,
-        Transaction.categoryName,
-        func.sum(Transaction.amount).label("amount")
-    ).where(
-        Transaction.userId == user_id,
-        Transaction.type == "expense",
-        Transaction.date >= start_date,
-        Transaction.date < end_date
-    ).group_by(Transaction.categoryId, Transaction.categoryName).order_by(func.sum(Transaction.amount).desc())
-    
-    cat_results = session.exec(cat_stmt).all()
-    
-    categories = []
-    for row in cat_results:
-        percentage = int((row.amount / total_expense * 100)) if total_expense > 0 else 0
-        categories.append({
-            "categoryId": row.categoryId,
-            "categoryName": row.categoryName,
-            "amount": row.amount,
-            "percentage": percentage
-        })
+    # 2. 按分类统计收支排行 (公用逻辑)
+    def get_cat_stats(t_type: str):
+        stmt = select(
+            Transaction.categoryId,
+            Transaction.categoryName,
+            func.sum(Transaction.amount).label("amount")
+        ).where(
+            Transaction.userId == user_id,
+            Transaction.type == t_type,
+            Transaction.date >= start_date,
+            Transaction.date < end_date
+        ).group_by(Transaction.categoryId, Transaction.categoryName).order_by(func.sum(Transaction.amount).desc())
+        
+        results = session.exec(stmt).all()
+        total = total_income if t_type == "income" else total_expense
+        
+        categories = []
+        for row in results:
+            percentage = int((row.amount / total * 100)) if total > 0 else 0
+            categories.append({
+                "categoryId": row.categoryId,
+                "categoryName": row.categoryName,
+                "amount": row.amount,
+                "percentage": percentage
+            })
+        return categories
 
     return {
         "monthlyIncome": total_income,
         "monthlyExpense": total_expense,
-        "categories": categories
+        "expenseCategories": get_cat_stats("expense"),
+        "incomeCategories": get_cat_stats("income")
     }
+
+@router.get("/stats/category/{category_id}", response_model=List[TransactionRead])
+async def get_category_transactions(
+    category_id: str,
+    type: str = "expense",
+    year: int = None,
+    month: int = None,
+    user_id: str = Depends(get_current_user_id),
+    session: Session = Depends(get_session)
+):
+    # 确定时间范围
+    if not year: year = datetime.now().year
+    if month:
+        start_date = datetime(year, month, 1)
+        if month == 12:
+            end_date = datetime(year + 1, 1, 1)
+        else:
+            end_date = datetime(year, month + 1, 1)
+    else:
+        start_date = datetime(year, 1, 1)
+        end_date = datetime(year + 1, 1, 1)
+
+    statement = select(Transaction).where(
+        Transaction.userId == user_id,
+        Transaction.categoryId == category_id,
+        Transaction.type == type,
+        Transaction.date >= start_date,
+        Transaction.date < end_date
+    ).options(joinedload(Transaction.asset)).order_by(Transaction.amount.desc())
+    
+    return session.exec(statement).all()

@@ -99,7 +99,13 @@ function App() {
           />
         );
       case 'stats':
-        return <StatsPage refreshKey={refreshKey} />;
+        return (
+          <StatsPage 
+            refreshKey={refreshKey} 
+            onEditTransaction={handleEditTransaction}
+            onDeleteTransaction={handleDeleteTransaction}
+          />
+        );
       case 'transactions':
         return (
           <TransactionsPage 

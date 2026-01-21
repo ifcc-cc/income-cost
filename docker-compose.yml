@@ -9,7 +9,8 @@ services:
     volumes:
       - ./data:/app/data
     environment:
-      - DATABASE_URL=sqlite:////app/data/prod.db
+      - DATABASE_URL=postgresql://postgres:lpk123030@192.168.0.218:5432/expense_tracker
+      - UPLOAD_DIR=/app/data/uploads
     restart: always
 
   frontend:

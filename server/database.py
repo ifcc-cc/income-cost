@@ -1,7 +1,9 @@
 from sqlmodel import create_engine, Session, SQLModel
 from config import CONFIG
 
-engine = create_engine(CONFIG.DATABASE_URL, connect_args={"check_same_thread": False})
+# 判定是否为 SQLite 决定是否添加 check_same_thread
+connect_args = {"check_same_thread": False} if CONFIG.DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(CONFIG.DATABASE_URL, connect_args=connect_args)
 
 def get_session():
     with Session(engine) as session:
