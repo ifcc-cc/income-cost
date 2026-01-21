@@ -6,7 +6,7 @@ from schemas import AssetCreate, AssetRead
 from auth import get_current_user_id
 from typing import List
 
-router = APIRouter(prefix="/assets", tags=["assets"])
+router = APIRouter(prefix="/api/assets", tags=["assets"])
 
 @router.post("/", response_model=AssetRead)
 async def create_asset(

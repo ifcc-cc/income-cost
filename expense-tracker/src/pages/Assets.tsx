@@ -24,7 +24,7 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
   const fetchData = async () => {
     try {
       const [assetsData, meData] = await Promise.all([
-        api.get<Asset[]>('/assets'),
+        api.get<Asset[]>('/api/assets'),
         api.get<any>('/users/me')
       ]);
       setAssets(assetsData);
@@ -59,12 +59,12 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
         balance: parseFloat(newAsset.balance)
       };
       if (editingAssetId) {
-        await api.request(`/assets/${editingAssetId}`, { 
+        await api.request(`/api/assets/${editingAssetId}`, { 
           method: 'PUT', 
           body: JSON.stringify(payload) 
         });
       } else {
-        await api.post('/assets/', payload);
+        await api.post('/api/assets/', payload);
       }
       setIsAddModalOpen(false);
       setEditingAssetId(null);
@@ -78,7 +78,7 @@ export default function AssetsPage({ refreshKey }: { refreshKey?: number }) {
   const handleDeleteAsset = async (id: string) => {
     if (!confirm('确定要删除该资产吗？相关账单将失去关联。')) return;
     try {
-      await api.request(`/assets/${id}`, { method: 'DELETE' });
+      await api.request(`/api/assets/${id}`, { method: 'DELETE' });
       fetchData();
     } catch (error) {
       alert('删除失败');

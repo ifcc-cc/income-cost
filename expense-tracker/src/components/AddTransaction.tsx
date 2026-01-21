@@ -27,9 +27,10 @@ export default function AddTransaction({ isOpen, onClose, onSave, onDelete, edit
   const currentCategories = type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
   const [selectedCategory, setSelectedCategory] = useState(currentCategories[0]);
 
+  // 获取资产列表
   useEffect(() => {
     if (isOpen) {
-      api.get<Asset[]>('/assets').then(data => {
+      api.get<Asset[]>('/api/assets').then(data => {
         setAssets(data);
         if (editData) {
           setType(editData.type);
