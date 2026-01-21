@@ -7,7 +7,7 @@ class Config:
     ACCESS_TOKEN_EXPIRE_MINUTES = 15
     REFRESH_TOKEN_EXPIRE_DAYS = 7
     ALGORITHM = "HS256"
-    # 生产环境通常会挂载 /app/data 目录，本地则直接存根目录
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
+    # 生产环境通过环境变量注入，本地开发默认使用远程 Postgres 的开发库
+    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:lpk123030@192.168.0.218:5432/expense_tracker_dev")
 
 CONFIG = Config()

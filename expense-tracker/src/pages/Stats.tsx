@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Calendar, ChevronLeft, ChevronRight, Wallet, CreditCard, ArrowLeft, ChevronRight as ChevronRightIcon } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Wallet, CreditCard, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/data/categories';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#F97316'];
 const ALL_CATEGORIES = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
 
-export default function StatsPage({ refreshKey, onEditTransaction, onDeleteTransaction }: { refreshKey?: number, onEditTransaction?: (t: any) => void, onDeleteTransaction?: (id: string) => void }) {
+export default function StatsPage({ refreshKey, onEditTransaction }: { refreshKey?: number, onEditTransaction?: (t: any) => void, onDeleteTransaction?: (id: string) => void }) {
   const [activeType, setActiveType] = useState<'expense' | 'income'>('expense');
   const [viewType, setViewType] = useState<'month' | 'year'>('month');
   const [date, setDate] = useState(new Date());

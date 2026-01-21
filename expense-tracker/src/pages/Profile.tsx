@@ -54,6 +54,17 @@ export default function ProfilePage({ user, onLogout, onUpdateUser }: { user: an
     } catch (e: any) { alert(e.message); }
   };
 
+  const handleChangePassword = async () => {
+    try {
+      await api.post('/users/change-password', { 
+        oldPassword: passwords.old, 
+        newPassword: passwords.new 
+      });
+      alert('密码修改成功');
+      setView('main');
+    } catch (e: any) { alert(e.message); }
+  };
+
   // 渲染头像
   const renderAvatar = (sizeClass: string, textClass: string) => {
     const avatarUrl = user.avatar

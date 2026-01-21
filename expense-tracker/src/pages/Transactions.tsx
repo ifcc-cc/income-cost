@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
-import { Edit3, Trash2, Search, Wallet, CreditCard, X } from 'lucide-react';
+import { Edit3, Trash2, Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DatePicker } from '../components/ui/DatePicker';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/data/categories';
