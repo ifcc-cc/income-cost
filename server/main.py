@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import traceback
 from database import init_db
-from routes import auth, users, transactions
+from routes import auth, users, transactions, assets
 
 app = FastAPI(title="Expense Tracker API")
 
@@ -26,8 +26,6 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 @app.middleware("http")
-
-@app.middleware("http")
 async def log_requests(request, call_next):
     print(f"Request: {request.method} {request.url}")
     response = await call_next(request)
@@ -41,6 +39,7 @@ def on_startup():
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(transactions.router)
+app.include_router(assets.router)
 
 @app.get("/")
 async def root():

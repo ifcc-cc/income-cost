@@ -1,6 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel
-from models import UserBase, TransactionBase
+from models import UserBase, TransactionBase, AssetBase
 
 class UserCreate(UserBase):
     password: str
@@ -8,6 +8,12 @@ class UserCreate(UserBase):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+class AssetCreate(AssetBase):
+    pass
+
+class AssetRead(AssetBase):
+    id: str
 
 class Token(BaseModel):
     accessToken: str
@@ -24,6 +30,8 @@ class TransactionCreate(TransactionBase):
 class TransactionRead(TransactionBase):
     id: str
     userId: str
+    created_at: datetime
+    asset: Optional[AssetRead] = None
 
 class CategoryStat(BaseModel):
     categoryId: str
@@ -39,3 +47,4 @@ class UserStats(BaseModel):
 class UserMeResponse(BaseModel):
     user: dict
     stats: UserStats
+    assets: List[AssetRead]

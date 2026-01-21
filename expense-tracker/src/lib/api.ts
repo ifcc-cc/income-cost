@@ -69,7 +69,7 @@ class ApiClient {
         } else {
           // 刷新失败，强制登出
           this.clearTokens();
-          window.location.reload(); 
+          // window.location.reload();  <-- 移除这行，避免无限刷新
           throw new Error('Session expired');
         }
       }
