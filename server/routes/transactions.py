@@ -8,7 +8,7 @@ from auth import get_current_user_id
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
 
-@router.post("/", response_model=TransactionRead)
+@router.post("", response_model=TransactionRead)
 async def create_transaction(
     transaction_data: TransactionCreate,
     user_id: str = Depends(get_current_user_id),
@@ -96,7 +96,7 @@ async def delete_transaction(
     session.commit()
     return {"message": "Deleted"}
 
-@router.get("/", response_model=List[TransactionRead])
+@router.get("", response_model=List[TransactionRead])
 async def get_transactions(
     user_id: str = Depends(get_current_user_id),
     session: Session = Depends(get_session)
