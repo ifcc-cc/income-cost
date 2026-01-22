@@ -6,19 +6,16 @@ import traceback
 import os
 from database import init_db
 from routes import auth, users, transactions, assets
+from config import CONFIG
 
 app = FastAPI(title="Expense Tracker API")
 
 # 确保上传目录存在
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# 生产环境存放在 /app/data/uploads，本地存放在 server/data/uploads
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", os.path.join(BASE_DIR, "data", "uploads"))
-
-if not os.path.exists(UPLOAD_DIR):
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+if not os.path.exists(CONFIG.UPLOAD_DIR):
+    os.makedirs(CONFIG.UPLOAD_DIR, exist_ok=True)
 
 # 挂载静态文件
-app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+app.mount("/uploads", StaticFiles(directory=CONFIG.UPLOAD_DIR), name="uploads")
 
 # 允许跨域
 app.add_middleware(

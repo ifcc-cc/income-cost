@@ -43,3 +43,5 @@ server/data/uploads/*
 *.pem
 cert/
 secrets/
+
+*.tsbuildinfo

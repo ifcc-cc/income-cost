@@ -10,6 +10,7 @@ from typing import Optional, List
 from sqlalchemy.orm import joinedload
 import os
 import uuid
+from config import CONFIG
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -26,7 +27,12 @@ async def upload_avatar(
     # 生成唯一文件名
     ext = os.path.splitext(file.filename)[1]
     filename = f"{uuid.uuid4()}{ext}"
-    file_path = os.path.join("data/uploads", filename)
+    
+    # 确保上传目录存在
+    if not os.path.exists(CONFIG.UPLOAD_DIR):
+        os.makedirs(CONFIG.UPLOAD_DIR, exist_ok=True)
+        
+    file_path = os.path.join(CONFIG.UPLOAD_DIR, filename)
     
     # 保存文件
     with open(file_path, "wb") as f:
