@@ -32,3 +32,15 @@ expense-tracker/node_modules/
 # App Data
 server/data/uploads/*
 !server/data/uploads/.gitkeep
+
+# Jenkins and CI/CD
+Jenkinsfile
+.jenkins/
+
+# Secrets and Environment
+.env
+.env.*
+*.key
+*.pem
+cert/
+secrets/
