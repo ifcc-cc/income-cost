@@ -34,7 +34,6 @@ server/data/uploads/*
 !server/data/uploads/.gitkeep
 
 # Jenkins and CI/CD
-Jenkinsfile
 .jenkins/
 
 # Secrets and Environment
