@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main', 
-                    credentialsId: 'aliyun-git-creds',
+                    credentialsId: 'codeup-git-creds',
                     url: 'https://codeup.aliyun.com/6265fce5a60d8a4bbe175cd0/income-cost.git'
             }
         }
