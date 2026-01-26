@@ -40,7 +40,12 @@ async def login(login_data: UserLogin, session: Session = Depends(get_session)):
     return {
         "accessToken": access_token,
         "refreshToken": refresh_token,
-        "user": {"id": user.id, "email": user.email, "nickname": user.nickname}
+        "user": {
+            "id": user.id, 
+            "email": user.email, 
+            "nickname": user.nickname,
+            "avatar": user.avatar
+        }
     }
 
 @router.post("/refresh-token")
